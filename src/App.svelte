@@ -1,5 +1,6 @@
 <script>
 	import { format, add } from 'date-fns';
+	import Circle from "./Circle.svelte";
 
 	let array = [];
 
@@ -20,16 +21,24 @@
 
 </script>
 
-<main>
-	<p>If I'm going to bed now, when should I wake up?</p>
-	<button on:click={ () => array = whenToWakeUp() }>Calculate</button>
+<section class="section">
+	<div class="container">
+		<h1 class="title">Sleep Cycle Calculator</h1>
 
-	{#each array as cycle, i}
-		{#if i != 0}
-			<p>{i} sleep {i==1 ? "cycle" : "cycles"}: {cycle}</p>
-		{/if}
-	{/each}
+		<p class="block">If I'm going to bed now, when should I wake up?</p>
+		<button on:click={ () => array = whenToWakeUp() } class="button">Calculate</button>
 
-</main>
+		{#each array as cycle, i}
+			{#if i != 0}
+				<p>{i} sleep {i==1 ? "cycle" : "cycles"}: {cycle}</p>
+			{/if}
+		{/each}
 
-<style></style>
+		<Circle />
+
+	</div>
+</section>
+
+<style>
+
+</style>
