@@ -71,25 +71,31 @@ onMount(() => {
 })
 
 function mouseMove(e) {
-	mouse = {x: e.clientX, y: e.clientY}
-	mouseRel.x = mouse.x - circle.x
-	mouseRel.y = circle.y - mouse.y
-
-	theta = Math.atan(mouseRel.y / mouseRel.x)
-	// quadrant 2
-	if (mouseRel.x < 0 && mouseRel.y > 0) {
-		theta += Math.PI
-	// quadrant 3
-	} else if (mouseRel.x < 0 && mouseRel.y <= 0) {
-		theta += Math.PI
-	// quadrant 4
-	} else if (mouseRel.x > 0 && mouseRel.y <= 0) {
-		theta += 2 * Math.PI
-	}
-
-	// add offset
 	for (let i = 0; i < dots.length; i++) {
 		if (dots[i].pressed) {
+
+			// update circle values in case window changed size
+			circle.update()
+
+			// set and calculate mice values
+			mouse = {x: e.clientX, y: e.clientY}
+			mouseRel.x = mouse.x - circle.x
+			mouseRel.y = circle.y - mouse.y
+
+			// calculate theta
+			theta = Math.atan(mouseRel.y / mouseRel.x)
+			// quadrant 2
+			if (mouseRel.x < 0 && mouseRel.y > 0) {
+				theta += Math.PI
+			// quadrant 3
+			} else if (mouseRel.x < 0 && mouseRel.y <= 0) {
+				theta += Math.PI
+			// quadrant 4
+			} else if (mouseRel.x > 0 && mouseRel.y <= 0) {
+				theta += 2 * Math.PI
+			}
+
+			// offset theta and update dot
 			theta += dots[i].offset
 			dots[i].update();
 		}
@@ -112,10 +118,10 @@ function timeToRad(time) {
 
 </script>
 
-<div on:mousemove={(e) => {mouseMove(e)}} on:mouseup={() => circle.mouseUp()}>
+<div on:pointermove={(e) => {mouseMove(e)}} on:pointerup={() => circle.mouseUp()}>
 	<div class="circle" bind:this={circle.element}>
-		<div class="dot" bind:this={dots[0].element} on:mousedown={() => dots[0].pressed = true} style="background-color: white; "></div>
-		<div class="dot" bind:this={dots[1].element} on:mousedown={() => dots[1].pressed = true} style="background-color: gray; "></div>
+		<div class="dot" bind:this={dots[0].element} on:pointerdown={() => dots[0].pressed = true} ></div>
+		<div class="dot" bind:this={dots[1].element} on:pointerdown={() => dots[1].pressed = true} ></div>
 	</div>
 
 	Mouse: {mouse.x}, {mouse.y} <br>
@@ -129,6 +135,12 @@ function timeToRad(time) {
   --borderRadius: .5rem;
   --circleDiameter: 25rem;
   --dotDiameter: 3rem;
+}
+
+@media (max-width:600px) {
+	:root {
+		--circleDiameter: 18rem;
+		}
 }
 
 .circle {
@@ -149,4 +161,12 @@ function timeToRad(time) {
 	position: absolute;
 	transform: translate(-50%, -50%);
 }
+
+div {
+	touch-action: none
+}
+
+
+
+
 </style>
