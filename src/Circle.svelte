@@ -97,6 +97,19 @@ function mouseMove(e) {
 
 }
 
+function radToTime(rad) {
+	const piOverSixes = rad / (Math.PI / 6)
+	let hours = -1 * piOverSixes + 15
+	if (hours > 12) { hours -= 12; }
+	return hours;
+}
+
+function timeToRad(time) {
+	let piOverSixes = -1 * time + 15
+	if (piOverSixes >= 12) { piOverSixes -= 12; }
+	return piOverSixes * (Math.PI / 6);
+}
+
 </script>
 
 <div on:mousemove={(e) => {mouseMove(e)}} on:mouseup={() => circle.mouseUp()}>
