@@ -3,22 +3,36 @@ import { onMount } from "svelte";
 
 let mouse = {x: 0, y: 0}
 let mouseRel = {x: 0, y: 0}
-let theta = 0; //angle if offset is 0
+let theta = Math.PI; // angle if offset is 0
 
 class Dot {
-	constructor(offset) {
+	constructor(id, offset) {
 		this.element;
 		this.offset = offset;
 		this.pressed = false;
 		this.x = 0;
 		this.y = 0;
+		this.id = id;
+		this.alpha = 0; // theta - offset
 	}
-	update() {
-		if (!this.element) return
-		this.x = circle.r * Math.cos(theta)
-		this.y = circle.r * Math.sin(theta)
+	update(indirect=false) {
+		// if (!this.element) return
+
+		this.alpha = theta - this.offset
+
+		this.y = circle.r * Math.sin(this.alpha)
+		this.x = circle.r * Math.cos(this.alpha)
 		this.element.style.left = circle.r + this.x + "px"
 		this.element.style.top = circle.r - this.y + "px"
+
+		if (indirect) return
+		// update the other dot in "indirect" mode
+		for (let i = 0; i < dots.length; i++) {
+			if (i != this.id) {
+				dots[i].update(true);
+			}
+		}
+
 	}
 }
 
@@ -40,22 +54,28 @@ class Circle {
 		this.y = this.pos.top + this.r;
 	}
 	mouseUp() {
-		dotOne.pressed = false
-		dotTwo.pressed = false
+		dots[0].pressed = false
+		dots[1].pressed = false
 	}
 }
 
-let dotOne = new Dot(0)
-let dotTwo = new Dot(0 - Math.PI / 4)
+let dots = [ new Dot(0, 0), new Dot(1, Math.PI / 4) ]
 let circle = new Circle()
 
-onMount(() => { circle.update() })
+// initialize values
+onMount(() => { 
+	circle.update();
+	for (let i = 0; i < dots.length; i++) {
+		dots[i].update(true);
+	}
+})
 
-$: {
+function mouseMove(e) {
+	mouse = {x: e.clientX, y: e.clientY}
 	mouseRel.x = mouse.x - circle.x
 	mouseRel.y = circle.y - mouse.y
-	theta = Math.atan(mouseRel.y / mouseRel.x)
 
+	theta = Math.atan(mouseRel.y / mouseRel.x)
 	// quadrant 2
 	if (mouseRel.x < 0 && mouseRel.y > 0) {
 		theta += Math.PI
@@ -67,17 +87,22 @@ $: {
 		theta += 2 * Math.PI
 	}
 
-	if (dotOne.pressed) { dotOne.update(); }
-	if (dotTwo.pressed) { dotTwo.update(); }
+	// add offset
+	for (let i = 0; i < dots.length; i++) {
+		if (dots[i].pressed) {
+			theta += dots[i].offset
+			dots[i].update();
+		}
+	}
 
 }
 
 </script>
 
-<div on:mousemove={(e) => {mouse = {x: e.clientX, y: e.clientY}}} on:mouseup={() => circle.mouseUp()}>
+<div on:mousemove={(e) => {mouseMove(e)}} on:mouseup={() => circle.mouseUp()}>
 	<div class="circle" bind:this={circle.element}>
-		<div class="dot" bind:this={dotOne.element} on:mousedown={() => dotOne.pressed = true} ></div>
-		<div class="dot" bind:this={dotTwo.element} on:mousedown={() => dotTwo.pressed = true} ></div>
+		<div class="dot" bind:this={dots[0].element} on:mousedown={() => dots[0].pressed = true} style="background-color: white; "></div>
+		<div class="dot" bind:this={dots[1].element} on:mousedown={() => dots[1].pressed = true} style="background-color: gray; "></div>
 	</div>
 
 	Mouse: {mouse.x}, {mouse.y} <br>
@@ -106,7 +131,6 @@ $: {
 .dot {
 	height: var(--dotDiameter);
 	width: var(--dotDiameter);
-	background-color: white;
 	border: var(--borderRadius) solid black;
 	border-radius: 50%;
 	position: absolute;
