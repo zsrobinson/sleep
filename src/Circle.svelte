@@ -1,34 +1,57 @@
 <script>
-import { onMount, afterUpdate } from "svelte";
+import { onMount } from "svelte";
 
-let mouse = {};
-let mouseRel = {};
-let circleDOM;
-let circle = {};
-let theta;
-let dot = {};
-let dot2 = {};
-let dotDOM, dot2DOM;
-let dotTouch = false;
-let offset = -Math.PI / 4;
+let mouse = {x: 0, y: 0}
+let mouseRel = {x: 0, y: 0}
+let theta = 0; //angle if offset is 0
 
-onMount(() => {
-	var circlePos = circleDOM.getBoundingClientRect();
-	circle.borderWidth = parseInt(window.getComputedStyle(circleDOM).outlineTopWidth);
-	circle.r = (circlePos.width / 2) /* - circle.borderWidth */;
-	circle.x = circlePos.left + circle.r;
-	circle.y = circlePos.top + circle.r;
+class Dot {
+	constructor(offset) {
+		this.element;
+		this.offset = offset;
+		this.pressed = false;
+		this.x = 0;
+		this.y = 0;
+	}
+	update() {
+		if (!this.element) return
+		this.x = circle.r * Math.cos(theta)
+		this.y = circle.r * Math.sin(theta)
+		this.element.style.left = circle.r + this.x + "px"
+		this.element.style.top = circle.r - this.y + "px"
+	}
+}
 
-	dotDOM.style.left = 2 * circle.r + "px"
-	dotDOM.style.top = circle.r + "px"
-});
+class Circle {
+	constructor(element) {
+		this.element = element;
+		this.x = 0;
+		this.y = 0;
+		this.r = 0;
+		this.border = 0;
+		this.pos = {};
+	}
+	update() {
+		if (!this.element) return
+		this.pos = this.element.getBoundingClientRect();
+		this.borderWidth = parseInt(window.getComputedStyle(this.element).outlineTopWidth);
+		this.r = (this.pos.width / 2);
+		this.x = this.pos.left + this.r;
+		this.y = this.pos.top + this.r;
+	}
+	mouseUp() {
+		dotOne.pressed = false
+		dotTwo.pressed = false
+	}
+}
 
-function mouseMove(e) {
+let dotOne = new Dot(0)
+let dotTwo = new Dot(0 - Math.PI / 4)
+let circle = new Circle()
 
-	if (!dotTouch) return
+onMount(() => { circle.update() })
 
-	mouse = {x: e.clientX, y: e.clientY}
-
+$: {
 	mouseRel.x = mouse.x - circle.x
 	mouseRel.y = circle.y - mouse.y
 	theta = Math.atan(mouseRel.y / mouseRel.x)
@@ -44,28 +67,18 @@ function mouseMove(e) {
 		theta += 2 * Math.PI
 	}
 
-	dot.x = circle.r * Math.cos(theta)
-	dot.y = circle.r * Math.sin(theta)
-	
-	dot2.x = circle.r * Math.cos(theta + offset)
-	dot2.y = circle.r * Math.sin(theta + offset)
+	if (dotOne.pressed) { dotOne.update(); }
+	if (dotTwo.pressed) { dotTwo.update(); }
 
-	dotDOM.style.left = circle.r + dot.x + "px"
-	dotDOM.style.top = circle.r - dot.y + "px"
-
-	dot2DOM.style.left = circle.r + dot2.x + "px"
-	dot2DOM.style.top = circle.r - dot2.y + "px"
-
-	console.log("running")
 }
-
 
 </script>
 
-<div on:mousemove={mouseMove} on:mouseup={() => dotTouch = false}>
-	<div class="circle" bind:this={circleDOM}>
-	<div class="dot" bind:this={dotDOM} on:mousedown={() => dotTouch = true} ></div>
-	<div class="dot" bind:this={dot2DOM} ></div></div>
+<div on:mousemove={(e) => {mouse = {x: e.clientX, y: e.clientY}}} on:mouseup={() => circle.mouseUp()}>
+	<div class="circle" bind:this={circle.element}>
+		<div class="dot" bind:this={dotOne.element} on:mousedown={() => dotOne.pressed = true} ></div>
+		<div class="dot" bind:this={dotTwo.element} on:mousedown={() => dotTwo.pressed = true} ></div>
+	</div>
 
 	Mouse: {mouse.x}, {mouse.y} <br>
 	Circle: {circle.x}, {circle.y} <br>
