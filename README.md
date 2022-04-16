@@ -1,6 +1,6 @@
-# Sleep Cycles
+# Circular Sleep
 
-Visit Project: https://sleep.zsrobinson.com
+Visit Project: https://circularsleep.com
 
 A project to calculate various times to wake up or fall asleep to align with your natural sleep cycles. By waking up at the end of one of these 90 minute cycles, you will have a better night's rest. This calculator assumes that it takes the average person 14 minutes to fall asleep, and this value is factored into the calculations.
 
