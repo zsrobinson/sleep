@@ -6,7 +6,7 @@ let mouse = {x: 0, y: 0}
 let mouseRel = {x: 0, y: 0}
 let theta;
 
-let cycles = 6; // integer from 1 to 6
+let cycles = 5; // integer from 1 to 7
 let timeToFallAsleep = 14; // integer in minutes
 
 $: {
@@ -150,7 +150,7 @@ function hoursToOffset(time) {
 function changeCycles(value) {
 	if (cycles > 1 && value == -1) {
 		cycles--;
-	} else if (cycles < 6 && value == 1) {
+	} else if (cycles < 7 && value == 1) {
 		cycles++;
 	}
 }
@@ -193,17 +193,16 @@ function changeCycles(value) {
 			<div class="cycleInput">
 				<h2>Sleep Cycles:</h2>
 				<div>
+					<div class="cycleInputButton" on:click={() => changeCycles(1)}>
+						<i class="fa-solid fa-plus"></i>
+					</div>
 					<p>{cycles}</p>
-					<div>
-						<div class="cycleInputButton" on:click={() => changeCycles(1)}>
-							<i class="fa-solid fa-plus"></i>
-						</div>
-						<div class="cycleInputButton" on:click={() => changeCycles(-1)}>
-							<i class="fa-solid fa-minus"></i>
-						</div>
+					<div class="cycleInputButton" on:click={() => changeCycles(-1)}>
+						<i class="fa-solid fa-minus"></i>
 					</div>
 				</div>
-				<p>Equals {cycles * 1.5} Hours</p>
+				<p>Equal to {cycles * 1.5} hours</p>
+				<p>plus {timeToFallAsleep} minutes</p>
 			</div>
 		</div>
 
@@ -351,6 +350,7 @@ h1 {
 	text-align: center;
 	width: 4rem;
 	font-weight: bold;
+	margin: 0.75rem 1rem;
 }
 
 .cycleInputButton {
@@ -362,8 +362,6 @@ h1 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 0.5rem;
-	margin-left: 1rem;
 }
 
 .cycleInputButton > i {
