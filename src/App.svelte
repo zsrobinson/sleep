@@ -125,6 +125,7 @@ function radToHours(rad) {
 
 	// had to insert a zero width joiner so that iOS wouldn't format as clickable link
 	// return formattedTime.slice(0,1) + "&zwj;" + formattedTime.slice(1)
+	// nevermind? there was something weird before but now it's good...
 
 	return formattedTime
 }
@@ -197,12 +198,12 @@ setTimeout(initialize, 50);
 			<div class="cycleInput">
 				<h2>Sleep Cycles:</h2>
 				<div>
-					<div class="cycleInputButton" on:click={() => changeCycles(1)}>
-						<i class="fa-solid fa-plus"></i>
-					</div>
-					<p>{cycles}</p>
 					<div class="cycleInputButton" on:click={() => changeCycles(-1)}>
 						<i class="fa-solid fa-minus"></i>
+					</div>
+					<p>{cycles}</p>
+					<div class="cycleInputButton" on:click={() => changeCycles(1)}>
+						<i class="fa-solid fa-plus"></i>
 					</div>
 				</div>
 				<p>Equal to {cycles * 1.5} hours</p>
