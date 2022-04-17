@@ -77,14 +77,6 @@ class Circle {
 let dots = [ new Dot(0, 0), new Dot(1, hoursToOffset(1.5 * cycles)) ]
 let circle = new Circle()
 
-// initialize values
-onMount(() => { 
-	circle.update();
-	for (let i = 0; i < dots.length; i++) {
-		dots[i].update(true);
-	}
-})
-
 function mouseMove(e) {
 	for (let i = 0; i < dots.length; i++) {
 		if (dots[i].pressed) {
@@ -154,6 +146,18 @@ function changeCycles(value) {
 		cycles++;
 	}
 }
+
+function initialize() {
+	circle.update();
+	for (let i = 0; i < dots.length; i++) {
+		dots[i].update(true);
+	}
+}
+onMount(initialize);
+
+// sometimes the icons aren't aligned when
+// first loaded, hopefully this will help
+setTimeout(initialize, 50);
 
 </script>
 
