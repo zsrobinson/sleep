@@ -218,7 +218,7 @@ setTimeout(initialize, 50);
 	</section>
 
 	<footer>
-		<p>Created by Zachary Robinson</p>
+		<p>Created by <a href="https://zsrobinson.com"> Zachary Robinson </a> </p>
 		<p>View this project on <a href="https://github.com/zsrobinson/sleep"> GitHub </a> </p>
 	</footer>
 
