@@ -255,11 +255,17 @@ setTimeout(initialize, 50);
 	position: absolute;
 	transform: translate(-50%, -50%);
 	background-color: var(--secondary); 
-	cursor: default; /* hopefully disables dragging */
+	cursor: pointer;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	transition: background-color 0.1s;
+}
+
+.dot:hover {
+	background-color: var(--secondary-light);
 }
 
 .dot > i {
@@ -367,6 +373,12 @@ h1 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	transition: background-color 0.1s;
+}
+
+.cycleInputButton:hover {
+	background-color: var(--tertiary-light);
 }
 
 .cycleInputButton > i {
